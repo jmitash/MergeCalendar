@@ -1,17 +1,26 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 
-public class MainSchedulePanel extends JPanel
+public class MainSchedulePanel extends JPanel implements ActionListener
 {
-	public MainSchedulePanel()
+	private JButton leftButton = new JButton("<");
+	private JButton rightButton = new JButton(">");
+	private JLabel weekLabel;
+	private Schedule schedule;
+
+	public MainSchedulePanel(Schedule schedule)
 	{
+		this.schedule = schedule;
 		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+		weekLabel = new JLabel(schedule.getWeekStartString() + " - " + schedule.getWeekEndString(), JLabel.CENTER);
 
 		JPanel weekPanel = new JPanel();
 		weekPanel.setLayout(new BorderLayout());
-		weekPanel.add(new JButton("<"), BorderLayout.WEST);
-		weekPanel.add(new JButton(">"), BorderLayout.EAST);
-		weekPanel.add(new JLabel("Test week", JLabel.CENTER), BorderLayout.CENTER);
+		weekPanel.add(leftButton, BorderLayout.WEST);
+		weekPanel.add(rightButton, BorderLayout.EAST);
+		weekPanel.add(weekLabel, BorderLayout.CENTER);
 		weekPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
 		this.add(weekPanel);
 
@@ -26,8 +35,26 @@ public class MainSchedulePanel extends JPanel
 		labelPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
 		this.add(labelPanel);
 
-		this.add(new SchedulePanel());
+		leftButton.addActionListener(this);
+		rightButton.addActionListener(this);
+
+		this.add(new SchedulePanel(schedule));
 	}
 
+	@Override
+	public void actionPerformed(ActionEvent e)
+	{
+		if(e.getSource() == leftButton)
+		{
+			schedule.goBackOneWeek();
+		}
+		else if(e.getSource() == rightButton)
+		{
+			schedule.advanceOneWeek();			
+		}
+		weekLabel.setText(schedule.getWeekStartString() + " - " + schedule.getWeekEndString());
+		this.invalidate();		
+		this.revalidate();
+	}
 	
 }
