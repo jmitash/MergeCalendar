@@ -68,4 +68,42 @@ public class Event
       s+=m;
       return s;
    }
+
+   public String fileString()
+   {
+      String s = startTime.get(Calendar.YEAR)+" ";
+      int x = startTime.get(Calendar.MONTH);
+      if(x<10)
+         s+="0";
+      s+=x+" ";
+      x = startTime.get(Calendar.DAY_OF_MONTH);
+      if(x<10)
+         s+="0";
+      s+=x+" ";
+      x = startTime.get(Calendar.HOUR_OF_DAY);
+      if(x<10)
+         s+="0";
+      s+=x+" ";
+      x = startTime.get(Calendar.MINUTE);
+      if(x<10)
+         s+="0";
+      s+=x+" "+endTime.get(Calendar.YEAR)+" ";
+      x = endTime.get(Calendar.MONTH);
+      if(x<10)
+         s+="0";
+      s+=x+" ";
+      x = endTime.get(Calendar.DAY_OF_MONTH);
+      if(x<10)
+         s+="0";
+      s+=x+" ";
+      x = endTime.get(Calendar.HOUR_OF_DAY);
+      if(x<10)
+         s+="0";
+      s+=x+" ";
+      x = endTime.get(Calendar.MINUTE);
+      if(x<10)
+         s+="0";
+      s+=x+" "+name;
+      return s;
+   }
 }

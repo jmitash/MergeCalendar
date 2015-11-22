@@ -136,6 +136,18 @@ public class Schedule
       weekEnd.add(Calendar.DAY_OF_MONTH, -7);
    }
 
+   public String fileString()
+   {
+      String s = "";
+      for(int i = 0; i < events.size(); i++)
+      {
+         s+=events.get(i).fileString();
+         if(i+1<events.size())
+            s+="\n";
+      }
+      return s;
+   }
+
    public String toString()
    {
       String s = "";
