@@ -9,6 +9,9 @@ public class EventPanel extends JPanel implements ActionListener
 {
 	public final static String[] MONTHS = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 
+	private JCheckBox[] repeatCheckBoxes = { new JCheckBox("Every Sunday"), new JCheckBox("Every Monday"), new JCheckBox("Every Tuesday"),
+		new JCheckBox("Every Wednesday"), new JCheckBox("Every Thursday"), new JCheckBox("Every Friday"), new JCheckBox("Every Saturday") };
+
 	private JTextField eventNameField = new JTextField(15);
 
 	private JComboBox<String> startMonthBox;
@@ -24,6 +27,9 @@ public class EventPanel extends JPanel implements ActionListener
 	private JComboBox<String> endHourBox = new JComboBox<>();
 	private JComboBox<String> endMinuteBox = new JComboBox<>();
 	private JComboBox<String> endAmPmBox = new JComboBox<>(new String[] { "AM", "PM" });
+
+
+	private boolean recurring = false;
 
 	private JButton addButton = new JButton("Add");
 
@@ -49,6 +55,14 @@ public class EventPanel extends JPanel implements ActionListener
 		this.add(namePanel);
 
 		this.add(Box.createRigidArea(new Dimension(0, 10)));
+
+		JPanel repeatPanel = new JPanel(new GridLayout(repeatCheckBoxes.length, 1));
+		for(JCheckBox checkBox : repeatCheckBoxes)
+		{
+			repeatPanel.add(checkBox);
+			checkBox.addActionListener(this);
+		}
+		this.add(repeatPanel);
 		
 		JPanel labelPanel3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		labelPanel3.add(new JLabel("Start Date:", JLabel.LEFT));
@@ -166,9 +180,43 @@ public class EventPanel extends JPanel implements ActionListener
 				Integer.parseInt((String) endMinuteBox.getSelectedItem()),
 				0);
 
-			Event event = new Event(startDate, endDate, eventNameField.getText());
-			schedule.addEvent(event);
+			if(!recurring)
+			{
+				Event event = new Event(startDate, endDate, eventNameField.getText());
+				schedule.addEvent(event);
+			}
+			else
+			{
+				boolean[] selectedDays = new boolean[repeatCheckBoxes.length];
+				for(int i = 0; i < repeatCheckBoxes.length; i++)
+				{
+					selectedDays[i] = repeatCheckBoxes[i].isSelected();
+				}
+				RecurringEvent re = new RecurringEvent(eventNameField.getText(), startDate, endDate, selectedDays);
+				schedule.addRecurringEvent(re);
+			}
 			ScheduleFrame.INSTANCE.repaint();
+		}
+		else if(e.getSource() instanceof JCheckBox)
+		{
+			boolean checkBoxSelected = false;
+			for(JCheckBox checkBox : repeatCheckBoxes)
+			{
+				if(checkBox.isSelected())
+				{
+					checkBoxSelected = true;
+					break;
+				}
+			}
+
+			startDayBox.setEnabled(!checkBoxSelected);
+			startMonthBox.setEnabled(!checkBoxSelected);
+			startYearBox.setEnabled(!checkBoxSelected);
+			endDayBox.setEnabled(!checkBoxSelected);
+			endMonthBox.setEnabled(!checkBoxSelected);
+			endYearBox.setEnabled(!checkBoxSelected);
+
+			recurring = checkBoxSelected;
 		}
 	}
 }

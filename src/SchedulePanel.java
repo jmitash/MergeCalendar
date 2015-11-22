@@ -34,7 +34,7 @@ public class SchedulePanel extends JPanel
 		}
 
 
-		ArrayList<Event> drawEvents = (ArrayList<Event>) schedule.getEvents().clone();
+		ArrayList<Event> drawEvents = (ArrayList<Event>) schedule.getEvents(schedule.getWeekStart(), schedule.getWeekEnd()).clone();
 	
 		for(Event event : drawEvents)
 		{

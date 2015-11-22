@@ -48,13 +48,18 @@ public class Event
    {
       return name;
    }
+
+   public boolean between(Calendar start, Calendar end)
+   {
+       return startTime.after(start) && endTime.before(end);
+   }
    
    public String toString()
    {
       return name + ": " + dateString(startTime) + " - " + dateString(endTime);
    }
    
-   public String dateString(Calendar c)
+   public static String dateString(Calendar c)
    {
       String s = c.get(Calendar.YEAR)+"/"+c.get(Calendar.MONTH)+"/"+c.get(Calendar.DAY_OF_MONTH)+" "+c.get(Calendar.HOUR_OF_DAY)+":";
       int m = c.get(Calendar.MINUTE);

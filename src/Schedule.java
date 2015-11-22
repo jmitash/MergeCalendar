@@ -5,18 +5,31 @@ import java.util.GregorianCalendar;
 public class Schedule
 {
    private ArrayList<Event> events;
+   private ArrayList<RecurringEvent> recurringEvents;
    private Calendar weekStart;
    private Calendar weekEnd;
    
    public Schedule()
    {
       events = new ArrayList<Event>();
+      recurringEvents = new ArrayList<>();
+      
       weekStart = Calendar.getInstance();
       weekStart.add(Calendar.DAY_OF_MONTH, -weekStart.get(Calendar.DAY_OF_WEEK) + 1);
       weekStart.add(Calendar.HOUR_OF_DAY, -weekStart.get(Calendar.HOUR_OF_DAY));
       weekStart.add(Calendar.MINUTE, -weekStart.get(Calendar.MINUTE));
       weekEnd = (Calendar) weekStart.clone();
       weekEnd.add(Calendar.DAY_OF_MONTH, 6);
+   }
+
+   public Calendar getWeekStart()
+   {
+       return weekStart;
+   }
+
+   public Calendar getWeekEnd()
+   {
+       return weekEnd;
    }
    
    public boolean addEvent(Event e)
@@ -42,9 +55,32 @@ public class Schedule
       return add;
    }
 
-   public ArrayList<Event> getEvents()
+   public boolean addRecurringEvent(RecurringEvent re)
+   {
+      recurringEvents.add(re);
+      return true;
+   }
+
+   public ArrayList<Event> getAllEvents()
    {
       return events;
+   }
+
+   public ArrayList<Event> getEvents(Calendar start, Calendar end)
+   {
+       ArrayList<Event> events = (ArrayList<Event>) this.events.clone();
+       for(int i = events.size() - 1; i >= 0; i--)
+       {
+          if(!events.get(i).between(start, end))
+          {
+             events.remove(i);
+          }
+       }
+       for(RecurringEvent re : recurringEvents)
+       {
+          events.addAll(re.getEventsInSpan(start, end));
+       }
+       return events;
    }
    
    public ArrayList<Event> getEmptyTimes(Calendar start, Calendar end)
